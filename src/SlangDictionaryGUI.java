@@ -11,6 +11,7 @@ class SlangDictionaryGUI extends JFrame{
     private SearchPanel searchPanel;
     private CRUDPanel crudPanel;
     private FunPanel funPanel;
+    private AddSlangPanel addSlangPanel;
 
     public SlangDictionaryGUI(TreeMap<String, ArrayList<String>> dictionary) {
         super("Slang Dictionary");
@@ -20,6 +21,9 @@ class SlangDictionaryGUI extends JFrame{
         searchPanel = new SearchPanel();
         crudPanel = new CRUDPanel();
         funPanel = new FunPanel();
+        addSlangPanel = new AddSlangPanel();
+
+        addSlangPanel.setVisible(false);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setPreferredSize(new Dimension(1000, 600));
@@ -27,6 +31,7 @@ class SlangDictionaryGUI extends JFrame{
 
         add(resultPanel);
         add(searchPanel);
+        add(addSlangPanel);
         add(crudPanel);
         add(funPanel);
 
@@ -85,26 +90,45 @@ class SlangDictionaryGUI extends JFrame{
         // 3. History
 
         // 4. Add new slang
-        // addSlangBtn.addActionListener(e -> {
-        //     JFrame addSlangFrame = new JFrame("Add a new slang");
-        //     addSlangFrame.pack();
-        //     addSlangFrame.setPreferredSize(new Dimension(600, 400));
-        //     addSlangFrame.setMinimumSize(new Dimension(600, 400));
-        //     addSlangFrame.setLocationRelativeTo(null);
-        //     addSlangFrame.setVisible(true);
-        // });
+        /// a. Make the add slang panel appear
+        crudPanel.getAddButton().addActionListener(e -> {
+            addSlangPanel.setVisible(true);
+        });
+        /// b. Close the panel when cancel
+        addSlangPanel.getCancelButton().addActionListener(e -> {
+            addSlangPanel.setVisible(false);
+            addSlangPanel.setConfirmState(false);
+        });
+        /// c. Clicking the add slang
+        addSlangPanel.getAddButton().addActionListener(e -> {
+            String newSlang = addSlangPanel.getSlangInput().trim().toUpperCase();
+            String newMeaning = addSlangPanel.getMeaningInput().trim();
+            if (newSlang.isEmpty() || newMeaning.isEmpty()) {
+                addSlangPanel.setMeaningError("Slang input and meaning input can't be empty, please fill out both fields");
+            }
+            // TODO: Add confirm + overwrite or duplicate feature
+            else {
+                SlangDictionary SD = SlangDictionary.getInstance();
+                SD.addSlang(newSlang, newMeaning);
+                SD.setSlangFile("files/slang.txt");
+                resultPanel.setLabel("New slang successfully added");
+                resultPanel.setDefinitionArea(newSlang +" has been added to the dictionary");
+                addSlangPanel.setVisible(false);
+            }
+        });
 
         // 5. Edit a slang
 
         // 6. Delete slang word
 
         // 7. Reset slang dictionary (Fix slang.txt and defaultSlang.txt first)
-        // resetDictionaryBtn.addActionListener(e -> {
-        //     SlangDictionary SD = SlangDictionary.getInstance();
-        //     SD.load("defaultSlang.txt");
-        //     SD.setSlangFile("slang.txt");
-        //     definitionArea.setText("Dictionary successfully resetted!");
-        // });
+        crudPanel.getResetButton().addActionListener(e -> {
+            SlangDictionary SD = SlangDictionary.getInstance();
+            SD.load("files/defaultSlang.txt");
+            SD.setSlangFile("files/slang.txt");
+            resultPanel.setDefinitionArea("Dictionary successfully resetted!");
+            resultPanel.setLabel("Resetted");
+        });
 
         // 8. Random slang word
         funPanel.getRandomButton().addActionListener(e -> {

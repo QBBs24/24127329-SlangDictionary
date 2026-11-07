@@ -48,15 +48,35 @@ class SlangDictionary {
                 slang = line.substring(0, backTickPos);
                 meaning = line.substring(backTickPos + 1, line.length());
 
-                if (dictionary.get(slang) != null) {
-                    dictionary.get(slang).add(meaning);
+                ArrayList<Integer> separatorPos = new ArrayList<>();
+                ArrayList<String> meaningArr = new ArrayList<>();
+                for (int i = 0; i < meaning.length(); i++) {
+                    if (meaning.charAt(i) == '|') {
+                        separatorPos.add(i);
+                    }
+                }
+                if (separatorPos.isEmpty()) {
+                    meaningArr.add(meaning);
+                }
+                else if (separatorPos.size() == 1) {
+                    meaningArr.add(meaning.substring(0, separatorPos.get(0)).trim());
+                    meaningArr.add(meaning.substring(separatorPos.get(0) + 1, meaning.length()).trim());
                 }
                 else {
-                    ArrayList<String> meaningArr = new ArrayList<>();
-                    meaningArr.add(meaning);
-    
-                    dictionary.put(slang, meaningArr);
+                    for (int i = 0; i <= separatorPos.size(); i++) {
+                        if (i == 0) {
+                            meaningArr.add(meaning.substring(0, separatorPos.get(0)).trim());
+                        }
+                        else if (i == separatorPos.size()) {
+                            meaningArr.add(meaning.substring(separatorPos.get(i - 1) + 1, meaning.length()).trim());
+                        }
+                        else {
+                            meaningArr.add(meaning.substring(separatorPos.get(i - 1) + 1, separatorPos.get(i)).trim());
+                        }
+                    }
                 }
+
+                dictionary.put(slang, meaningArr);
             }
 
             BR.close();
@@ -67,22 +87,31 @@ class SlangDictionary {
     }
 
     public void addSlang(String slang, String meanings) {
-        ArrayList<Integer> commaPos = new ArrayList<>();
+        ArrayList<Integer> separatorPos = new ArrayList<>();
         ArrayList<String> meaningArr = new ArrayList<>();
         for (int i = 0; i < meanings.length(); i++) {
-            if (meanings.charAt(i) == ',') {
-                commaPos.add(i);           
+            if (meanings.charAt(i) == '|') {
+                separatorPos.add(i);           
             }
         }
-        for (int i = 0; i < commaPos.size(); i++) {
-            if (i == 0) {
-                meaningArr.add(meanings.substring(0, commaPos.get(i)).trim());
-            }
-            else if (i == commaPos.size() - 1) {
-                meaningArr.add(meanings.substring(commaPos.get(i) + 1, meanings.length()).trim());
-            }
-            else {
-                meaningArr.add(meanings.substring(commaPos.get(i - 1) + 1, commaPos.get(i)).trim());
+        if (separatorPos.size() == 0) {
+            meaningArr.add(meanings);
+        }
+        else if (separatorPos.size() == 1) {
+            meaningArr.add(meanings.substring(0, separatorPos.get(0)).trim());
+            meaningArr.add(meanings.substring(separatorPos.get(0) + 1, meanings.length()).trim());
+        }
+        else {
+            for (int i = 0; i <= separatorPos.size(); i++) {
+                if (i == 0) {
+                    meaningArr.add(meanings.substring(0, separatorPos.get(i)).trim());
+                }
+                else if (i == separatorPos.size()) {
+                    meaningArr.add(meanings.substring(separatorPos.get(i - 1) + 1, meanings.length()).trim());
+                }
+                else {
+                    meaningArr.add(meanings.substring(separatorPos.get(i - 1) + 1, separatorPos.get(i)).trim());
+                }
             }
         }
         dictionary.put(slang, meaningArr);
