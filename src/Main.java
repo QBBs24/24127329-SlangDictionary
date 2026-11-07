@@ -7,7 +7,7 @@ class Main {
 
         SD = SlangDictionary.getInstance();
 
-        SD.load("files/slang.txt");
+        SD.load("src/files/slang.txt");
 
         // Tham khảo từ Internet, Invoke later, cho hàm chỉ chạy trong 1 thread (Entity Dispatch Thread, EDT)
         SwingUtilities.invokeLater(() -> {

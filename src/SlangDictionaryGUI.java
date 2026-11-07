@@ -110,7 +110,7 @@ class SlangDictionaryGUI extends JFrame{
             else {
                 SlangDictionary SD = SlangDictionary.getInstance();
                 SD.addSlang(newSlang, newMeaning);
-                SD.setSlangFile("files/slang.txt");
+                SD.setSlangFile("src/files/slang.txt");
                 resultPanel.setLabel("New slang successfully added");
                 resultPanel.setDefinitionArea(newSlang +" has been added to the dictionary");
                 addSlangPanel.setVisible(false);
@@ -124,8 +124,8 @@ class SlangDictionaryGUI extends JFrame{
         // 7. Reset slang dictionary (Fix slang.txt and defaultSlang.txt first)
         crudPanel.getResetButton().addActionListener(e -> {
             SlangDictionary SD = SlangDictionary.getInstance();
-            SD.load("files/defaultSlang.txt");
-            SD.setSlangFile("files/slang.txt");
+            SD.load("src/files/defaultSlang.txt");
+            SD.setSlangFile("src/files/slang.txt");
             resultPanel.setDefinitionArea("Dictionary successfully resetted!");
             resultPanel.setLabel("Resetted");
         });
