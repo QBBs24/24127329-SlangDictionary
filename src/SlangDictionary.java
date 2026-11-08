@@ -117,6 +117,10 @@ class SlangDictionary {
         dictionary.put(slang, meaningArr);
     }
 
+    public void deleteSlang(String slang) {
+        dictionary.remove(slang);
+    }
+
     public void setSlangFile(String pathToFile) {
         try {
             BufferedWriter BW = new BufferedWriter(new FileWriter(pathToFile));

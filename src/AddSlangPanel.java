@@ -92,6 +92,11 @@ public class AddSlangPanel extends JPanel{
         this.slangInput.setText("");
     }
 
+    public void erase() {
+        this.meaningInput.setText("");
+        this.slangInput.setText("");
+    }
+
     public void setConfirmState(boolean state) {
         this.confirmState = state;
     }
