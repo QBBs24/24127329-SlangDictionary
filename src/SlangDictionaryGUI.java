@@ -17,6 +17,7 @@ class SlangDictionaryGUI extends JFrame{
     private EditSlangPanel editSlangPanel;
     private DeleteSlangPanel delSlangPanel;
     private HistoryPanel historyPanel;
+    private QuizPanel quizPanel;
 
     public SlangDictionaryGUI(TreeMap<String, ArrayList<String>> dictionary) {
         super("Slang Dictionary");
@@ -37,6 +38,7 @@ class SlangDictionaryGUI extends JFrame{
 
         // Separate cards
         historyPanel = new HistoryPanel();
+        quizPanel = new QuizPanel();
         
         addSlangPanel.setVisible(false);
         editSlangPanel.setVisible(false);
@@ -58,6 +60,7 @@ class SlangDictionaryGUI extends JFrame{
         // Adding cards
         mainPanel.add(mainCard, "main");
         mainPanel.add(historyPanel, "history");
+        mainPanel.add(quizPanel, "quiz");
 
         add(mainPanel);
 
@@ -271,11 +274,79 @@ class SlangDictionaryGUI extends JFrame{
             resultPanel.setLabel(key);
         });
 
-        // 9. Slang quiz
+        // 9. Slang quiz (Given slang, guess the meaning)
+        /// a. Open the quiz page and start a round
+        funPanel.getSlangQuizButton().addActionListener(e -> {
+            cards.show(mainPanel, "quiz");
+            startSlangQuiz(dictionary);
+        });
 
-        // 10. Slang definition quiz
+        /// b. Retry: new round, same page
+        quizPanel.getRestartButton().addActionListener(e -> {
+            startSlangQuiz(dictionary);
+        });
+
+        /// c. Close: back to the main page
+        quizPanel.getCloseButton().addActionListener(e -> {
+            cards.show(mainPanel, "main");
+        });
+
+        // 10. Slang definition quiz (Given the meaning, guess the slang)
 
         pack();
         setVisible(true);
+    }
+
+    private void startSlangQuiz(TreeMap<String, ArrayList<String>> dictionary) {
+        quizPanel.resetQuiz(); // gameEnded = false, resets label and button colors
+
+        ArrayList<String> keys = new ArrayList<>(dictionary.keySet());
+        if (keys.isEmpty()) {
+            return;
+        }
+
+        Random random = new Random();
+        ArrayList<String> allAnswers = new ArrayList<>();
+
+        /// a. Get the question
+        String question = keys.get(random.nextInt(keys.size()));
+
+        /// b. Get the correct answer (random meaning of that slang)
+        ArrayList<String> correctMeanings = new ArrayList<>(dictionary.get(question));
+        String correct = correctMeanings.get(random.nextInt(correctMeanings.size()));
+        allAnswers.add(correct);
+        quizPanel.setCorrectAnswer(correct);
+
+        /// c. Get 3 wrong answers from other slangs
+        if (SlangDictionary.getInstance().getDict().size() >= 4)
+        {
+            while (allAnswers.size() < 4) {
+                String wrongKey = keys.get(random.nextInt(keys.size()));
+                if (wrongKey.equals(question)) {
+                    continue;
+                }
+
+                ArrayList<String> wrongMeanings = new ArrayList<>(dictionary.get(wrongKey));
+                String wrong = wrongMeanings.get(random.nextInt(wrongMeanings.size()));
+                if (!allAnswers.contains(wrong)) {
+                    allAnswers.add(wrong);
+                }
+            }
+        }
+        else {
+            for (int i = 0; i < 3; i++) {
+                allAnswers.add("Placeholder, not enough answers");
+            }
+        }
+
+        /// d. Set the question label
+        quizPanel.setLabel(question);
+
+        /// e. Set the options in random order
+        for (int i = 0; i < 4; i++) {
+            int answerIndex = random.nextInt(allAnswers.size());
+            quizPanel.setAnswerButtons(allAnswers.get(answerIndex), i);
+            allAnswers.remove(answerIndex);
+        }
     }
 }
