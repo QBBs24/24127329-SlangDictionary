@@ -11,9 +11,12 @@ public class DeleteSlangPanel extends JPanel{
     private JButton deleteButton;
     private JTextField slangInput;
     private JLabel slangLabel;
+    private boolean confirmState;
 
     public DeleteSlangPanel() {
         setPreferredSize(new Dimension(400, 100));
+
+        confirmState = false;
 
         cancelButton = new JButton("Cancel");
         cancelButton.setPreferredSize(new Dimension(100, 20));
@@ -54,6 +57,10 @@ public class DeleteSlangPanel extends JPanel{
         return this.deleteButton;
     }
 
+    public void setDeleteButtonText(String str) {
+        this.deleteButton.setText(str);
+    }
+
     public String getSlangInput() {
         return this.slangInput.getText();
     }
@@ -64,5 +71,18 @@ public class DeleteSlangPanel extends JPanel{
 
     public void erase() {
         this.slangInput.setText("");
+    }
+
+    public void setConfirmState(boolean state) {
+        this.confirmState = state;
+    }
+
+    public boolean getConfirmState() {
+        return this.confirmState;
+    }
+
+    public void cancelConfirm(String str, boolean state) {
+        setConfirmState(state);
+        setDeleteButtonText(str);
     }
 }

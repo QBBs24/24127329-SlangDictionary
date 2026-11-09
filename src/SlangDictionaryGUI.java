@@ -142,6 +142,7 @@ class SlangDictionaryGUI extends JFrame{
 
             delSlangPanel.erase(); 
             delSlangPanel.setVisible(false);
+            delSlangPanel.cancelConfirm("Delete", false);
         });
         /// b. Close the panel when cancel
         addSlangPanel.getCancelButton().addActionListener(e -> {
@@ -178,6 +179,7 @@ class SlangDictionaryGUI extends JFrame{
 
             delSlangPanel.erase();
             delSlangPanel.setVisible(false);
+            delSlangPanel.cancelConfirm("Delete", false);
         });
 
         /// b. Hide the panel when clicking the Cancel button
@@ -221,6 +223,7 @@ class SlangDictionaryGUI extends JFrame{
         delSlangPanel.getCancelButton().addActionListener(e -> {
             delSlangPanel.erase();
             delSlangPanel.setVisible(false);
+            delSlangPanel.cancelConfirm("Delete", false);
         });
 
         /// c. Clicking the delete button
@@ -231,14 +234,19 @@ class SlangDictionaryGUI extends JFrame{
             if (SD.getDict().get(slangToBeDeleted) == null) {
                 delSlangPanel.setSlangInput("That slang doesn't exist.");
             }
-            //TODO: Add confirmation before deletion
-            else {
+
+            else if (!delSlangPanel.getConfirmState()) {
+                delSlangPanel.setDeleteButtonText("Confirm?");
+                delSlangPanel.setConfirmState(true);
+            }
+            else if (delSlangPanel.getConfirmState()){
                 SD.deleteSlang(slangToBeDeleted);
                 SD.setSlangFile("src/files/slang.txt");
                 resultPanel.setLabel("Deletion succeeded");
                 resultPanel.setDefinitionArea(slangToBeDeleted + " was deleted");
                 delSlangPanel.setVisible(false);
                 delSlangPanel.erase();
+                delSlangPanel.cancelConfirm("Delete", false);
             }
         });
 
