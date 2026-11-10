@@ -12,8 +12,6 @@ public class ResultPanel extends JPanel {
     private JPanel topWordPanel;
     private JTextArea definitionArea;
     private JScrollPane scrollPane;
-
-    // Dimension resultPanelDim = new Dimension(600, 150);
     
     public ResultPanel() {
         setPreferredSize(new Dimension(600, 150));

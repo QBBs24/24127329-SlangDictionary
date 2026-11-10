@@ -73,8 +73,8 @@ class SlangDictionaryGUI extends JFrame{
         add(mainPanel);
 
         // 1. Search slang
-        searchPanel.getSearchButton().addActionListener(e -> { // Tham khảo từ Internet, Lambda expression
-            // Phần implement của hàm do sinh viên tự viết
+        searchPanel.getSearchButton().addActionListener(e -> { // CITATION: From Baeldung, Lambda expression
+            // Implementation was written by the student
             String inp = searchPanel.getTextInput();
             inp = inp.toUpperCase();
             inp = inp.trim();
@@ -100,7 +100,7 @@ class SlangDictionaryGUI extends JFrame{
 
         // 2. Search by definition
         searchPanel.getSearchByDefButton().addActionListener(e -> { // Tham khảo từ Internet, Lambda expression
-            // Phần implement của hàm do sinh viên tự viết
+            // Implementation was written by the student
                 String inp = searchPanel.getTextInput();
                 inp = inp.trim();
                 inp = inp.toLowerCase();

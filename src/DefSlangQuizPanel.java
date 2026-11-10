@@ -31,7 +31,7 @@ public class DefSlangQuizPanel extends JPanel{
 
         for (int i = 0; i < 4; i++) {
             answers[i] = new JButton();
-            // Claude suggestion to make the index variable final
+            // CITATION: Claude suggestion to make the index variable final
             final int index = i;
             answers[i].addActionListener(e -> gameStateManager(index));
             answerPanel.add(answers[i]);
@@ -110,6 +110,7 @@ public class DefSlangQuizPanel extends JPanel{
             else
                 answers[i].setBackground(Color.RED);
         }
+        // Set gameEnded = true so that further button presses won't do anything
         gameEnded = true;
     }
 
@@ -125,6 +126,7 @@ public class DefSlangQuizPanel extends JPanel{
                 answers[i].setBackground(Color.RED);
             }
         }
+        // Set gameEnded = true so that further button presses won't do anything
         gameEnded = true;
     }
 

@@ -9,7 +9,7 @@ class Main {
 
         SD.load("src/files/slang.txt");
 
-        // Tham khảo từ Internet, Invoke later, cho hàm chỉ chạy trong 1 thread (Entity Dispatch Thread, EDT)
+        // Suggested by Claude, Invoke later, so this will only run in a thread (Entity Dispatch Thread, EDT)
         SwingUtilities.invokeLater(() -> {
             SlangDictionaryGUI SDGUI = new SlangDictionaryGUI(SD.getDict());
         });
