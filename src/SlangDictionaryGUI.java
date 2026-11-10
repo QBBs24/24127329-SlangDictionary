@@ -268,10 +268,13 @@ class SlangDictionaryGUI extends JFrame{
         editSlangPanel.getEditButton().addActionListener(e -> {
             String editSlang = editSlangPanel.getSlangInput();
             editSlang = editSlang.trim().toUpperCase();
-            String newMeaning = editSlangPanel.getNewMeaning();
+            String newMeaning = editSlangPanel.getNewMeaning().trim();
             SlangDictionary SD = SlangDictionary.getInstance();
             if (SD.getDict().get(editSlang) == null) {
                 editSlangPanel.setSlangInput("This slang doesn't exist");
+            }
+            else if (newMeaning.isEmpty()) {
+                editSlangPanel.setMeaning("You must input a meaning");
             }
             else {
                 SD.addSlang(editSlang, newMeaning);
