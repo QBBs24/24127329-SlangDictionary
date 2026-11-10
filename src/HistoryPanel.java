@@ -1,4 +1,8 @@
 import java.awt.Dimension;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -22,6 +26,8 @@ public class HistoryPanel extends JPanel{
         JPanel buttonPanel = new JPanel();
         
         historyModel = new DefaultListModel<>();
+        loadHistory("src/files/history.txt");
+
         historyList = new JList<>(historyModel);
         
         scrollPane = new JScrollPane(historyList);
@@ -60,5 +66,51 @@ public class HistoryPanel extends JPanel{
         this.historyModel.clear();
     }
     
-    // TODO: Add write to file and load from file (so when the app closes, the history is still there)
+    // Write history to file (so when the app closes, the history is still there)
+    public void writeHistory(String pathToFile) {
+        try {
+            BufferedWriter BW = new BufferedWriter(new FileWriter(pathToFile));
+            
+            for (int i = 0; i < historyModel.size(); i++) {
+                if (i == historyModel.size() - 1)
+                    BW.write(historyModel.get(i));
+                else {
+                    BW.write(historyModel.get(i));
+                    BW.newLine();
+                }
+            }
+
+            BW.flush();
+            BW.close();
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    // Load history from file
+    public void loadHistory(String pathToFile) {
+        try {
+            BufferedReader BR = new BufferedReader(new FileReader(pathToFile));
+
+            String line;
+            while ((line = BR.readLine()) != null) {
+                historyModel.add(historyModel.size(), line);
+            }
+            BR.close();
+        } 
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void clearHistoryFile(String pathToFile) {
+        try {
+            // Write 0 characters with append mode off to clear the file
+            new FileWriter(pathToFile, false).close();;
+        } 
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }

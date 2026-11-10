@@ -20,6 +20,11 @@ class SlangDictionaryGUI extends JFrame{
     private QuizPanel quizPanel;
     private DefSlangQuizPanel defQuizPanel;
 
+    // paths
+    private String slangDic = "src/files/slang.txt";
+    private String defaultSlangDic = "src/files/defaultSlang.txt";
+    private String historyFile = "src/files/history.txt";
+
     public SlangDictionaryGUI(TreeMap<String, ArrayList<String>> dictionary) {
         super("Slang Dictionary");
 
@@ -89,6 +94,7 @@ class SlangDictionaryGUI extends JFrame{
                 resultPanel.setLabel(inp);
                 // Update history (to remain with the industry standard, even invalid input will be added to history)
                 historyPanel.addHistory(inp);
+                historyPanel.writeHistory(historyFile);
             }
         });
 
@@ -133,6 +139,7 @@ class SlangDictionaryGUI extends JFrame{
         /// c. Clear history
         historyPanel.getClearButton().addActionListener(e -> {
             historyPanel.clearHistory();
+            historyPanel.clearHistoryFile(historyFile);
         });
 
         // 4. Add new slang
@@ -169,7 +176,7 @@ class SlangDictionaryGUI extends JFrame{
                 if (addSlangPanel.getConfirmState()) {
                     SlangDictionary SD = SlangDictionary.getInstance();
                     SD.addSlang(newSlang, newMeaning);
-                    SD.setSlangFile("src/files/slang.txt");
+                    SD.setSlangFile(slangDic);
                     resultPanel.setLabel("Slang editted");
                     resultPanel.setDefinitionArea(newSlang + " has been overwritten");
                     addSlangPanel.setVisible(false);
@@ -201,7 +208,7 @@ class SlangDictionaryGUI extends JFrame{
                 else {
                     SlangDictionary SD = SlangDictionary.getInstance();
                     SD.addSlang(newSlang, newMeaning);
-                    SD.setSlangFile("src/files/slang.txt");
+                    SD.setSlangFile(slangDic);
                     resultPanel.setLabel("New slang successfully added");
                     resultPanel.setDefinitionArea(newSlang +" has been added to the dictionary");
                     addSlangPanel.setVisible(false);
@@ -228,7 +235,7 @@ class SlangDictionaryGUI extends JFrame{
             else {
                 SlangDictionary SD = SlangDictionary.getInstance();
                 SD.addMeaning(newSlang, newMeaning);
-                SD.setSlangFile("src/files/slang.txt");
+                SD.setSlangFile(slangDic);
                 resultPanel.setLabel("New slang duplicated");
                 resultPanel.setDefinitionArea(newSlang +" has been duplicated to the dictionary");
                 addSlangPanel.setVisible(false);
@@ -268,7 +275,7 @@ class SlangDictionaryGUI extends JFrame{
             }
             else {
                 SD.addSlang(editSlang, newMeaning);
-                SD.setSlangFile("src/files/slang.txt");
+                SD.setSlangFile(slangDic);
                 resultPanel.setLabel("Slang editted");
                 resultPanel.setDefinitionArea(editSlang +" has been editted");
                 editSlangPanel.setVisible(false);
@@ -311,7 +318,7 @@ class SlangDictionaryGUI extends JFrame{
             }
             else if (delSlangPanel.getConfirmState()){
                 SD.deleteSlang(slangToBeDeleted);
-                SD.setSlangFile("src/files/slang.txt");
+                SD.setSlangFile(slangDic);
                 resultPanel.setLabel("Deletion succeeded");
                 resultPanel.setDefinitionArea(slangToBeDeleted + " was deleted");
                 delSlangPanel.setVisible(false);
@@ -323,8 +330,8 @@ class SlangDictionaryGUI extends JFrame{
         // 7. Reset slang dictionary (Fix slang.txt and defaultSlang.txt first)
         crudPanel.getResetButton().addActionListener(e -> {
             SlangDictionary SD = SlangDictionary.getInstance();
-            SD.load("src/files/defaultSlang.txt");
-            SD.setSlangFile("src/files/slang.txt");
+            SD.load(defaultSlangDic);
+            SD.setSlangFile(slangDic);
             resultPanel.setDefinitionArea("Dictionary successfully resetted!");
             resultPanel.setLabel("Resetted");
         });
