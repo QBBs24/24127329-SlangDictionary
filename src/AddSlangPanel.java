@@ -16,7 +16,13 @@ public class AddSlangPanel extends JPanel{
     private JTextArea meaningInput;
     private JLabel slangLabel;
     private JLabel meaningLabel;
-    private boolean confirmState = false;
+
+    // Duplicate
+    private JButton duplicateButton;
+    private JLabel duplicateWarning;
+
+    private boolean normalAndOverwrite = false;
+    private boolean duplicate = false;
 
     public AddSlangPanel() {
         setPreferredSize(new Dimension(400, 150));
@@ -28,6 +34,15 @@ public class AddSlangPanel extends JPanel{
         addButton = new JButton("Add");
         addButton.setPreferredSize(new Dimension(100, 20));
         addButton.setMaximumSize(new Dimension(100, 20));
+
+        // By default duplicate button and the warning is invisible, only appearing if there's duplicate
+        duplicateButton = new JButton("Duplicate");
+        duplicateButton.setVisible(false);
+        duplicateButton.setPreferredSize(new Dimension(100, 20));
+        duplicateButton.setMaximumSize(new Dimension(100, 20));
+        
+        duplicateWarning = new JLabel("This slang already exists, overwrite (replace meanings), duplicate (add meanings)");
+        duplicateWarning.setVisible(false);
 
         slangInput = new JTextField();
         slangInput.setPreferredSize(new Dimension(300, 25));
@@ -48,15 +63,16 @@ public class AddSlangPanel extends JPanel{
         meaningPanel.add(meaningLabel);
         meaningPanel.add(meaningInput);
         
-        
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(addButton);
+        buttonPanel.add(duplicateButton);
         buttonPanel.add(cancelButton);
 
         JPanel mainLayout = new JPanel();
         mainLayout.add(Box.createRigidArea(new Dimension(0, 5)));
         mainLayout.add(slangPanel);
         mainLayout.add(meaningPanel);
+        mainLayout.add(duplicateWarning);
         mainLayout.add(buttonPanel);
         mainLayout.add(Box.createRigidArea(new Dimension(0, 5)));
 
@@ -74,9 +90,12 @@ public class AddSlangPanel extends JPanel{
         return this.addButton;
     }
 
-    public void setAddState() {
-        if (confirmState)
-            this.addButton.setText("Confirm");
+    public JButton getDuplicateButton() {
+        return this.duplicateButton;
+    }
+
+    public JLabel getWarning() {
+        return this.duplicateWarning;
     }
 
     public String getSlangInput() {
@@ -98,6 +117,27 @@ public class AddSlangPanel extends JPanel{
     }
 
     public void setConfirmState(boolean state) {
-        this.confirmState = state;
+        this.normalAndOverwrite = state;
+    }
+
+    public void setDuplicateState(boolean state) {
+        this.duplicate = state;
+    }
+
+    public boolean getConfirmState() {
+        return this.normalAndOverwrite;
+    }
+
+    public boolean getDuplicateState() {
+        return this.duplicate;
+    }
+
+    public void reset() {
+        this.normalAndOverwrite = false;
+        this.duplicate = false;
+        this.duplicateButton.setVisible(false);
+        this.duplicateWarning.setVisible(false);
+        this.addButton.setText("Add");
+        this.duplicateButton.setText("Duplicate");
     }
 }

@@ -94,7 +94,7 @@ class SlangDictionary {
                 separatorPos.add(i);           
             }
         }
-        if (separatorPos.size() == 0) {
+        if (separatorPos.isEmpty()) {
             meaningArr.add(meanings);
         }
         else if (separatorPos.size() == 1) {
@@ -118,7 +118,9 @@ class SlangDictionary {
     }
 
     public void deleteSlang(String slang) {
-        dictionary.remove(slang);
+        if (dictionary.get(slang) != null){
+            dictionary.remove(slang);
+        }
     }
 
     public void setSlangFile(String pathToFile) {
@@ -157,5 +159,33 @@ class SlangDictionary {
         catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public void addMeaning(String slang, String meanings) {
+        ArrayList<Integer> separatorPos = new ArrayList<>();
+        for (int i = 0; i < meanings.length(); i++) {
+            if (meanings.charAt(i) == '|') {
+                separatorPos.add(i);           
+            }
+        }
+        ArrayList<String> meaningArr = new ArrayList<>(dictionary.get(slang));
+
+        if (separatorPos.isEmpty()) {
+            meaningArr.add(meanings);
+        }
+        else {
+            for (int i = 0; i <= separatorPos.size(); i++) {
+                if (i == 0) {
+                    meaningArr.add(meanings.substring(0, separatorPos.get(i)).trim());
+                }
+                else if (i == separatorPos.size()) {
+                    meaningArr.add(meanings.substring(separatorPos.get(i - 1) + 1, meanings.length()).trim());
+                }
+                else {
+                    meaningArr.add(meanings.substring(separatorPos.get(i - 1) + 1, separatorPos.get(i)).trim());
+                }
+            }
+        }
+        dictionary.put(slang, meaningArr);
     }
 }

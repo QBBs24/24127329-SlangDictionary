@@ -151,7 +151,7 @@ class SlangDictionaryGUI extends JFrame{
         addSlangPanel.getCancelButton().addActionListener(e -> {
             addSlangPanel.setVisible(false);
             addSlangPanel.erase();
-            addSlangPanel.setConfirmState(false);
+            addSlangPanel.reset();
         });
         /// c. Clicking the add slang
         addSlangPanel.getAddButton().addActionListener(e -> {
@@ -160,15 +160,80 @@ class SlangDictionaryGUI extends JFrame{
             if (newSlang.isEmpty() || newMeaning.isEmpty()) {
                 addSlangPanel.setMeaningError("Slang input and meaning input can't be empty, please fill out both fields");
             }
-            // TODO: Add confirm + overwrite or duplicate feature
+            // If duplicate
+            else if (dictionary.get(newSlang) != null) {
+                addSlangPanel.getWarning().setVisible(true);
+                addSlangPanel.getDuplicateButton().setVisible(true);
+
+                // Overwrite already confirmed so do the operation
+                if (addSlangPanel.getConfirmState()) {
+                    SlangDictionary SD = SlangDictionary.getInstance();
+                    SD.addSlang(newSlang, newMeaning);
+                    SD.setSlangFile("src/files/slang.txt");
+                    resultPanel.setLabel("Slang editted");
+                    resultPanel.setDefinitionArea(newSlang + " has been overwritten");
+                    addSlangPanel.setVisible(false);
+                    addSlangPanel.erase();
+                    addSlangPanel.reset();
+                }
+                // Button says "Overwrite", change to "Confirm"
+                else if (addSlangPanel.getAddButton().getText().equals("Overwrite")) {
+                    addSlangPanel.getAddButton().setText("Confirm?");
+                    addSlangPanel.setConfirmState(true);
+
+                    // Duplicate state and text reset
+                    addSlangPanel.getDuplicateButton().setText("Duplicate");
+                    addSlangPanel.setDuplicateState(false);
+                }
+                // First click on the add button, show the warning options
+                else {
+                    addSlangPanel.getAddButton().setText("Overwrite");
+                    addSlangPanel.getDuplicateButton().setText("Duplicate");
+                    addSlangPanel.setDuplicateState(false);
+                }
+            }
+            // No duplicate
+            else {
+                if (!addSlangPanel.getConfirmState()) {
+                    addSlangPanel.getAddButton().setText("Confirm?");
+                    addSlangPanel.setConfirmState(true);
+                }
+                else {
+                    SlangDictionary SD = SlangDictionary.getInstance();
+                    SD.addSlang(newSlang, newMeaning);
+                    SD.setSlangFile("src/files/slang.txt");
+                    resultPanel.setLabel("New slang successfully added");
+                    resultPanel.setDefinitionArea(newSlang +" has been added to the dictionary");
+                    addSlangPanel.setVisible(false);
+                    addSlangPanel.erase();
+                    addSlangPanel.reset();
+                }
+            }
+        });
+
+        // If this appears then it means it is guaranteed a duplicate slang
+        addSlangPanel.getDuplicateButton().addActionListener(e -> {
+            String newSlang = addSlangPanel.getSlangInput().trim().toUpperCase();
+            String newMeaning = addSlangPanel.getMeaningInput().trim();
+            if (newSlang.isEmpty() || newMeaning.isEmpty()) {
+                addSlangPanel.setMeaningError("Slang input and meaning input can't be empty, please fill out both fields");
+            }
+            else if (!addSlangPanel.getDuplicateState()) {
+                addSlangPanel.getDuplicateButton().setText("Confirm?");
+                addSlangPanel.setDuplicateState(true);
+                
+                addSlangPanel.setConfirmState(false);
+                addSlangPanel.getAddButton().setText("Overwrite");
+            }
             else {
                 SlangDictionary SD = SlangDictionary.getInstance();
-                SD.addSlang(newSlang, newMeaning);
+                SD.addMeaning(newSlang, newMeaning);
                 SD.setSlangFile("src/files/slang.txt");
-                resultPanel.setLabel("New slang successfully added");
-                resultPanel.setDefinitionArea(newSlang +" has been added to the dictionary");
+                resultPanel.setLabel("New slang duplicated");
+                resultPanel.setDefinitionArea(newSlang +" has been duplicated to the dictionary");
                 addSlangPanel.setVisible(false);
                 addSlangPanel.erase();
+                addSlangPanel.reset();
             }
         });
 
@@ -176,6 +241,7 @@ class SlangDictionaryGUI extends JFrame{
         /// a. Make the edit panel appear
         crudPanel.getEditButton().addActionListener(e -> {
             addSlangPanel.erase();
+            addSlangPanel.reset();
             addSlangPanel.setVisible(false);
 
             editSlangPanel.setVisible(true);
@@ -214,6 +280,7 @@ class SlangDictionaryGUI extends JFrame{
         /// a. Make the delete panel appear
         crudPanel.getDeleteButton().addActionListener(e -> {
             addSlangPanel.erase();
+            addSlangPanel.reset();
             addSlangPanel.setVisible(false);
 
             editSlangPanel.erase();

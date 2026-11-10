@@ -107,8 +107,12 @@ public class QuizPanel extends JPanel{
     public void setWin(int answerButtonIndex) {
         question.setText("YOU WIN!!!");
         for (int i = 0; i < 4; i++) {
-            answers[i].setBackground(i == answerButtonIndex ? Color.GREEN : Color.RED);
+            if (i == answerButtonIndex)
+                answers[i].setBackground(Color.GREEN);
+            else
+                answers[i].setBackground(Color.RED);
         }
+        gameEnded = true;
     }
 
     public void setLose(int answerButtonIndex) {
@@ -123,6 +127,7 @@ public class QuizPanel extends JPanel{
                 answers[i].setBackground(Color.RED);
             }
         }
+        gameEnded = true;
     }
 
     // Start a new round

@@ -60,4 +60,5 @@ public class HistoryPanel extends JPanel{
         this.historyModel.clear();
     }
     
+    // TODO: Add write to file and load from file (so when the app closes, the history is still there)
 }
