@@ -33,7 +33,8 @@ public class QuizPanel extends JPanel{
 
         for (int i = 0; i < 4; i++) {
             answers[i] = new JButton();
-            final int index = i;                       // must be final for the lambda
+            // Claude suggestion to make the index variable final
+            final int index = i;
             answers[i].addActionListener(e -> gameStateManager(index));
             answerPanel.add(answers[i]);
         }
@@ -113,20 +114,23 @@ public class QuizPanel extends JPanel{
     public void setLose(int answerButtonIndex) {
         question.setText("You lost... Maybe next time.");
         for (int i = 0; i < 4; i++) {
+            // The right answer will be green
             if (checkCorrect(getAnswer(i), correctAnswer)) {
-                answers[i].setBackground(Color.GREEN);   // reveal the right answer
-            } else if (i == answerButtonIndex) {
-                answers[i].setBackground(Color.RED);     // the player's wrong pick
+                answers[i].setBackground(Color.GREEN);
+            }
+            // User's answer will be red
+            else if (i == answerButtonIndex) {
+                answers[i].setBackground(Color.RED);
             }
         }
     }
 
-    // Call this when starting a new round
+    // Start a new round
     public void resetQuiz() {
         gameEnded = false;
         question.setText("Guess the meaning of this slang");
-        for (JButton b : answers) {
-            b.setBackground(null);    // back to default look
+        for (JButton button : answers) {
+            button.setBackground(null);
         }
     }
 }

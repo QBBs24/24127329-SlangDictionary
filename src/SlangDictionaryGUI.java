@@ -18,6 +18,7 @@ class SlangDictionaryGUI extends JFrame{
     private DeleteSlangPanel delSlangPanel;
     private HistoryPanel historyPanel;
     private QuizPanel quizPanel;
+    private DefSlangQuizPanel defQuizPanel;
 
     public SlangDictionaryGUI(TreeMap<String, ArrayList<String>> dictionary) {
         super("Slang Dictionary");
@@ -39,6 +40,7 @@ class SlangDictionaryGUI extends JFrame{
         // Separate cards
         historyPanel = new HistoryPanel();
         quizPanel = new QuizPanel();
+        defQuizPanel = new DefSlangQuizPanel();
         
         addSlangPanel.setVisible(false);
         editSlangPanel.setVisible(false);
@@ -61,6 +63,7 @@ class SlangDictionaryGUI extends JFrame{
         mainPanel.add(mainCard, "main");
         mainPanel.add(historyPanel, "history");
         mainPanel.add(quizPanel, "quiz");
+        mainPanel.add(defQuizPanel, "defQuiz");
 
         add(mainPanel);
 
@@ -300,13 +303,29 @@ class SlangDictionaryGUI extends JFrame{
         });
 
         // 10. Slang definition quiz (Given the meaning, guess the slang)
+        /// a. Show the definition quiz panel
+        funPanel.getDefinitionQuizButton().addActionListener(e -> {
+            cards.show(mainPanel, "defQuiz");
+            startDefQuiz(dictionary);
+        });
+        // b. Go back to the main panel
+        defQuizPanel.getCloseButton().addActionListener(e -> {
+            cards.show(mainPanel, "main");
+        });
+        // c. Restart the definition quiz
+        defQuizPanel.getRestartButton().addActionListener(e -> {
+            startDefQuiz(dictionary);
+        });
 
         pack();
         setVisible(true);
     }
 
+    // CITATION: The position of the function was suggested by Claude, before it was put in addActionListener
+    // Implementation was done 95% by the student with 5% correction + suggestion from Claude
     private void startSlangQuiz(TreeMap<String, ArrayList<String>> dictionary) {
-        quizPanel.resetQuiz(); // gameEnded = false, resets label and button colors
+        // gameEnded = false, resets label and button colors
+        quizPanel.resetQuiz();
 
         ArrayList<String> keys = new ArrayList<>(dictionary.keySet());
         if (keys.isEmpty()) {
@@ -326,7 +345,7 @@ class SlangDictionaryGUI extends JFrame{
         quizPanel.setCorrectAnswer(correct);
 
         /// c. Get 3 wrong answers from other slangs
-        if (SlangDictionary.getInstance().getDict().size() >= 4)
+        if (dictionary.size() >= 4)
         {
             while (allAnswers.size() < 4) {
                 String wrongKey = keys.get(random.nextInt(keys.size()));
@@ -354,6 +373,46 @@ class SlangDictionaryGUI extends JFrame{
         for (int i = 0; i < 4; i++) {
             int answerIndex = random.nextInt(allAnswers.size());
             quizPanel.setAnswerButtons(allAnswers.get(answerIndex), i);
+            allAnswers.remove(answerIndex);
+        }
+    }
+
+    private void startDefQuiz(TreeMap<String, ArrayList<String>> dictionary) {
+        defQuizPanel.resetQuiz();
+        // a. Get the question (the definition) and the correct answer
+        Random random = new Random();
+        ArrayList<String> questions = new ArrayList<>(dictionary.keySet());
+        String correctAnswer = questions.get(random.nextInt(questions.size()));
+
+        ArrayList<String> availableQuestions = new ArrayList<>(dictionary.get(correctAnswer));
+
+        // The definition the player has to guess
+        String question = availableQuestions.get(random.nextInt(availableQuestions.size()));
+
+        ArrayList<String> allAnswers = new ArrayList<>();
+        allAnswers.add(correctAnswer);
+        defQuizPanel.setCorrectAnswer(correctAnswer);
+
+        /// c. Get 3 wrong answers from other slangs
+        if (dictionary.size() >= 4)
+        {
+            while (allAnswers.size() < 4) {
+                allAnswers.add(questions.get(random.nextInt(questions.size())));
+            }
+        }
+        else {
+            for (int i = 0; i < 3; i++) {
+                allAnswers.add("Placeholder, not enough answers");
+            }
+        }
+
+        /// d. Set the label question
+        defQuizPanel.setLabel(question);
+
+        /// e. Set the options in random order
+        for (int i = 0; i < 4; i++) {
+            int answerIndex = random.nextInt(allAnswers.size());
+            defQuizPanel.setAnswerButtons(allAnswers.get(answerIndex), i);
             allAnswers.remove(answerIndex);
         }
     }
